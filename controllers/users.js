@@ -11,7 +11,7 @@ const getUsers = (req, res) => {
 const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (!user) return ErrorStatus.showNotFoundError(res, 'Пользователь с таким _id не найден');
+      if (!user) return ErrorStatus.showNotFoundError(res);
 
       return res.send(user);
     })
@@ -35,7 +35,7 @@ const updateUser = (req, res) => {
     { new: true },
   )
     .then((user) => {
-      if (!user) return ErrorStatus.showNotFoundError(res, 'Пользователь по указанному _id не найден');
+      if (!user) return ErrorStatus.showNotFoundError(res);
 
       return res.send(user);
     })
@@ -51,7 +51,7 @@ const updateAvatar = (req, res) => {
     { new: true },
   )
     .then((user) => {
-      if (!user) return ErrorStatus.showNotFoundError(res, 'Пользователь по указанному _id не найден');
+      if (!user) return ErrorStatus.showNotFoundError(res);
 
       return res.send(user);
     })

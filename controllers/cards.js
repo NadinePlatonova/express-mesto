@@ -1,23 +1,28 @@
 const Card = require('../models/card');
+const ErrorStatus = require('../errors/errors');
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((cards) => res.send(cards))
+    .catch((err) => ErrorStatus.showErrorStatus(err, res));
 };
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   return Card.create({ name, link, owner })
-    .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.send(card))
+    .catch((err) => ErrorStatus.showErrorStatus(err, res));
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => {
+      if (!card) return ErrorStatus.showNotFoundError(res);
+
+      return res.send(card);
+    })
+    .catch((err) => ErrorStatus.showErrorStatus(err, res));
 };
 
 const likeCard = (req, res) => Card.findByIdAndUpdate(
@@ -25,16 +30,24 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .then((card) => res.status(200).send(card))
-  .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+  .then((card) => {
+    if (!card) return ErrorStatus.showNotFoundError(res);
+
+    return res.send(card);
+  })
+  .catch((err) => ErrorStatus.showErrorStatus(err, res));
 
 const dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .then((card) => res.status(200).send(card))
-  .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+  .then((card) => {
+    if (!card) return ErrorStatus.showNotFoundError(res);
+
+    return res.send(card);
+  })
+  .catch((err) => ErrorStatus.showErrorStatus(err, res));
 
 module.exports = {
   getCards,
