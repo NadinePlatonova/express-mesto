@@ -10,12 +10,15 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => {
-      if (!user) return ErrorStatus.showNotFoundError(res);
-
-      return res.send(user);
-    })
-    .catch((err) => ErrorStatus.showErrorStatus(err, res));
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        ErrorStatus.showNotFoundError(res);
+      } else {
+        ErrorStatus.showErrorStatus(err, res);
+      }
+    });
 };
 
 const createUser = (req, res) => {
@@ -32,14 +35,17 @@ const updateUser = (req, res) => {
   return User.findByIdAndUpdate(
     req.params.userId,
     { name, about },
-    { new: true },
+    { new: true, runValidators: true },
   )
-    .then((user) => {
-      if (!user) return ErrorStatus.showNotFoundError(res);
-
-      return res.send(user);
-    })
-    .catch((err) => ErrorStatus.showErrorStatus(err, res));
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        ErrorStatus.showNotFoundError(res);
+      } else {
+        ErrorStatus.showErrorStatus(err, res);
+      }
+    });
 };
 
 const updateAvatar = (req, res) => {
@@ -48,14 +54,17 @@ const updateAvatar = (req, res) => {
   return User.findByIdAndUpdate(
     req.params.userId,
     avatar,
-    { new: true },
+    { new: true, runValidators: true },
   )
-    .then((user) => {
-      if (!user) return ErrorStatus.showNotFoundError(res);
-
-      return res.send(user);
-    })
-    .catch((err) => ErrorStatus.showErrorStatus(err, res));
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        ErrorStatus.showNotFoundError(res);
+      } else {
+        ErrorStatus.showErrorStatus(err, res);
+      }
+    });
 };
 
 module.exports = {

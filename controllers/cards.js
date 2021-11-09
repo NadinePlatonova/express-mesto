@@ -17,12 +17,15 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (!card) return ErrorStatus.showNotFoundError(res);
-
-      return res.send(card);
-    })
-    .catch((err) => ErrorStatus.showErrorStatus(err, res));
+    .orFail(new Error('NotValidId'))
+    .then((card) => res.send(card))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        ErrorStatus.showNotFoundError(res);
+      } else {
+        ErrorStatus.showErrorStatus(err, res);
+      }
+    });
 };
 
 const likeCard = (req, res) => Card.findByIdAndUpdate(
@@ -30,24 +33,30 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .then((card) => {
-    if (!card) return ErrorStatus.showNotFoundError(res);
-
-    return res.send(card);
-  })
-  .catch((err) => ErrorStatus.showErrorStatus(err, res));
+  .orFail(new Error('NotValidId'))
+  .then((card) => res.send(card))
+  .catch((err) => {
+    if (err.message === 'NotValidId') {
+      ErrorStatus.showNotFoundError(res);
+    } else {
+      ErrorStatus.showErrorStatus(err, res);
+    }
+  });
 
 const dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .then((card) => {
-    if (!card) return ErrorStatus.showNotFoundError(res);
-
-    return res.send(card);
-  })
-  .catch((err) => ErrorStatus.showErrorStatus(err, res));
+  .orFail(new Error('NotValidId'))
+  .then((card) => res.send(card))
+  .catch((err) => {
+    if (err.message === 'NotValidId') {
+      ErrorStatus.showNotFoundError(res);
+    } else {
+      ErrorStatus.showErrorStatus(err, res);
+    }
+  });
 
 module.exports = {
   getCards,
