@@ -4,7 +4,7 @@ const ServerError = require('./server-error');
 
 const INCORRECT_ID_ERROR = 'CastError';
 const BAD_REQUEST_ERROR = 'ValidationError';
-const MONGO_ERROR = 'MongoError';
+const MONGO_ERROR = 'MongoServerError';
 
 const INCORRECT_ID_ERROR_MSG = 'Передан несуществующий _id';
 const BAD_REQUEST_ERROR_MSG = 'Переданы некорректные данные';

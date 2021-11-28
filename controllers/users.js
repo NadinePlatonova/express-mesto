@@ -1,12 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { JWT_SECRET } = require('../config');
 
 const NotFoundError = require('../errors/not-found-error');
 const ForbiddenError = require('../errors/forbidden-error');
 const UnauthorisedUserError = require('../errors/unauthorised-user-error');
 const ConflictError = require('../errors/conflict-error');
-const BadRequestError = require('../errors/bad-request-error');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -21,7 +21,7 @@ const login = (req, res, next) => {
         if (!isValid) throw new ForbiddenError('Неправильный логин или пароль');
 
         if (isValid) {
-          const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
           res
             .cookie('jwt', token, {
               maxAge: 3600000 * 24 * 7,
@@ -69,10 +69,8 @@ const createUser = (req, res, next) => {
       name: user.name, about: user.about, avatar: user.avatar, email: user.email,
     }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Некорректные данные пользователя'));
-      } else if (err.name === 'MongoError' && err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
+      if (err.name === 'MongoError' && err.code === 11000) {
+        throw new ConflictError('Пользователь с таким email уже существует');
       } else {
         next(err);
       }
