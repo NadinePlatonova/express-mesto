@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-error');
 
 const usersRouter = require('./routes/users');
@@ -42,6 +43,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(helmet());
 app.use(limiter);
+app.use(requestLogger);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -57,12 +59,13 @@ app.post('/signin', celebrate({
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
+app.use(errorLogger);
+app.use(errors());
 // eslint-disable-next-line no-unused-vars
 app.use((req, res) => {
   throw new NotFoundError('Что-то пошло не так...');
 });
 app.use(errorHandler);
-app.use(errors());
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
