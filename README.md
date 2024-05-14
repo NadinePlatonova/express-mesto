@@ -1,27 +1,33 @@
-# Проект Место (бэкенд, React.js и Express.js)
-_В данном проекте создан бэкенд для проекта Место_
+# Project Mesto (backend, React.js, and Express.js)
 
-**Основной стек:** JavaScript, React.js, Express.js.
+_In this project, a backend for the Mesto project was created._
 
-**Основной функционал:**
-* валидация полей инпутов;
-* глобальная обработка ошибок;
-* авторизация и регистрация пользователя;
+**Main Stack:** JavaScript, React.js, Express.js.
 
-**Директории:**
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки
+**Main features:**
 
-**Использованы:**
-* Validator и Celebrate для валидации полей инпутов;
-* Winston для логирования приложения;
-* Helmet и express-rate-limit для защиты приложения;
-* подключение к серверу MongoDB.
+- Input field validation;
+- Global error handling;
+- User authorization and registration;
 
-**Инструкция по разворачиванию приложения:**
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+**Directories:**
 
-**Статус проекта:**
-* проект завершен.
+- `/routes` — folder with router files
+- `/controllers` — folder with user and card controller files
+- `/models` — folder with user and card schema description files
+
+**Used technologies:**
+
+- Validator and Celebrate for input field validation;
+- Winston for application logging;
+- Helmet and express-rate-limit for application security;
+- Connection to the MongoDB server.
+
+**Instructions for running the application:**
+
+- `npm run start` — starts the server
+- `npm run dev` — starts the server with hot-reload
+
+**Project status:**
+
+- The project is completed.
